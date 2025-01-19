@@ -25,6 +25,7 @@ CHANNEL_NAME = "The Privacy Advisory Channel"
 CHANNEL_ENDPOINT = "http://localhost:5001" # don't forget to adjust in the bottom of the file
 CHANNEL_FILE = 'messages.json'
 CHANNEL_TYPE_OF_SERVICE = 'aiweb24:chat'
+MAX_MESSAGES = 50 # the maximum number of messages to save and serve
 
 @app.cli.command('register')
 def register_command():
@@ -97,6 +98,8 @@ def send_message():
                      'timestamp': message['timestamp'],
                      'extra': extra,
                      })
+    if len(messages) > MAX_MESSAGES: # if message limit reached, truncate the oldest message
+        messages = messages[-MAX_MESSAGES:]
     save_messages(messages)
     return "OK", 200
 
