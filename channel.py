@@ -4,6 +4,7 @@
 from flask import Flask, request, render_template, jsonify
 import json
 import requests
+import datetime
 
 # Class-based application configuration
 class ConfigClass(object):
@@ -20,7 +21,7 @@ app.app_context().push()  # create an app context before initializing db
 HUB_URL = 'http://localhost:5555'
 HUB_AUTHKEY = '1234567890'
 CHANNEL_AUTHKEY = '0987654321'
-CHANNEL_NAME = "The One and Only Channel"
+CHANNEL_NAME = "The Privacy Advisory Channel"
 CHANNEL_ENDPOINT = "http://localhost:5001" # don't forget to adjust in the bottom of the file
 CHANNEL_FILE = 'messages.json'
 CHANNEL_TYPE_OF_SERVICE = 'aiweb24:chat'
@@ -101,14 +102,21 @@ def send_message():
 
 def read_messages():
     global CHANNEL_FILE
+    welcome_message = {'content': """
+                        Welcome to The Privacy Advisory Channel! Feel free to discuss privacy and data protection here.
+                        Interdisciplinary discussion between fields is encouraged: psychologically, ethically, technically, lawfully, etc.
+                        """,
+                        'sender': 'System',
+                        'timestamp': datetime.datetime.now().isoformat(),
+                        'extra': None}
     try:
         f = open(CHANNEL_FILE, 'r')
     except FileNotFoundError:
-        return []
+        return welcome_message
     try:
         messages = json.load(f)
     except json.decoder.JSONDecodeError:
-        messages = []
+        messages = welcome_message
     f.close()
     return messages
 
