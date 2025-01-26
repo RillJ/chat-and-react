@@ -172,3 +172,6 @@ cython_debug/
 
 # Task files
 README_task3.md
+
+# Messages database
+messages.json

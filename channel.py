@@ -2,9 +2,11 @@
 ##
 
 from flask import Flask, request, render_template, jsonify
+import os
 import json
 import requests
 import datetime
+from dotenv import load_dotenv
 
 # Class-based application configuration
 class ConfigClass(object):
@@ -15,16 +17,17 @@ class ConfigClass(object):
 
 # Create Flask app
 app = Flask(__name__)
-app.config.from_object(__name__ + '.ConfigClass')  # configuration
-app.app_context().push()  # create an app context before initializing db
+app.config.from_object(__name__ + '.ConfigClass') # configuration
+app.app_context().push() # create an app context before initializing db
 
-HUB_URL = 'http://localhost:5555'
-HUB_AUTHKEY = '1234567890'
-CHANNEL_AUTHKEY = '0987654321'
+load_dotenv()
+HUB_URL = "http://localhost:5555"
+HUB_AUTHKEY = "1234567890"
+CHANNEL_AUTHKEY = os.getenv('CHANNEL_AUTHKEY')
 CHANNEL_NAME = "The Privacy Advisory Channel"
 CHANNEL_ENDPOINT = "http://localhost:5001" # don't forget to adjust in the bottom of the file
-CHANNEL_FILE = 'messages.json'
-CHANNEL_TYPE_OF_SERVICE = 'aiweb24:chat'
+CHANNEL_FILE = "messages.json"
+CHANNEL_TYPE_OF_SERVICE = "aiweb24:chat"
 MAX_MESSAGES = 50 # the maximum number of messages to save and serve
 
 @app.cli.command('register')
@@ -115,11 +118,11 @@ def read_messages():
     try:
         f = open(CHANNEL_FILE, 'r')
     except FileNotFoundError:
-        return welcome_message
+        return [welcome_message]
     try:
         messages = json.load(f)
     except json.decoder.JSONDecodeError:
-        messages = welcome_message
+        messages = [welcome_message]
     f.close()
     return messages
 
