@@ -1,0 +1,35 @@
+{
+    "data_protection": [
+        "gdpr", "ccpa", "privacy law", "compliance", "regulation", "dpa", "data protection",
+        "privacy shield", "personal data", "data rights", "consent", "legal basis",
+        "data subject", "supervisory authority", "privacy notice", "data controller",
+        "schrems ii", "data residency", "processor", "controller-processor contract", 
+        "international transfers", "cross-border data"
+    ],
+    "privacy_concepts": [
+        "anonymization", "pseudonymization", "encryption", "data minimization",
+        "privacy by design", "privacy by default", "data portability", "right to be forgotten",
+        "data protection impact assessment", "dpia", "privacy impact", "data lifecycle",
+        "opt-in", "opt-out", "privacy enhancing technologies", "pets", "differential privacy",
+        "data transparency", "user control", "k-anonimity", "l-diversity", "t-closeness"
+    ],
+    "privacy_risks": [
+        "breach", "leak", "tracking", "surveillance", "data theft", "cyber attack",
+        "vulnerability", "exposure", "unauthorized access", "data loss", "insider threat",
+        "social engineering", "phishing", "identity theft", "malware", "ransomware",
+        "man-in-the-middle attack", "data scraping", "oversharing"
+    ],
+    "best_practices": [
+        "security measures", "safeguards", "controls", "audit", "assessment",
+        "policy", "procedure", "training", "awareness", "documentation",
+        "incident response", "data retention", "access control", "data governance",
+        "multi factor authentication", "mfa", "zero trust", "risk assessment",
+        "third party risk management", "privacy policy updates"
+    ],
+    "privacy_tools": [
+        "vpn", "tor", "signal", "encryption tool", "password manager", "firewall",
+        "antivirus", "security software", "privacy browser", "ad blocker", "proxy",
+        "secure email", "file encryption", "2fa apps", "metadata removal tools",
+        "sandboxing software", "digital identity protection", "secure chat apps"
+    ]
+}
