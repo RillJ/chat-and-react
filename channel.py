@@ -23,12 +23,19 @@ app.app_context().push() # create an app context before initializing db
 load_dotenv()
 HUB_URL = "http://localhost:5555"
 HUB_AUTHKEY = "1234567890"
-CHANNEL_AUTHKEY = os.getenv('CHANNEL_AUTHKEY')
+CHANNEL_AUTHKEY = os.getenv("CHANNEL_AUTHKEY")
 CHANNEL_NAME = "The Privacy Advisory Channel"
 CHANNEL_ENDPOINT = "http://localhost:5001" # don't forget to adjust in the bottom of the file
 CHANNEL_FILE = "messages.json"
 CHANNEL_TYPE_OF_SERVICE = "aiweb24:chat"
-MAX_MESSAGES = 50 # the maximum number of messages to save and serve
+MAX_MESSAGES = 50 # the maximum number of messages to save and serve, note that the welcome message is excluded
+WELCOME_MESSAGE = {'content': """
+                    Welcome to The Privacy Advisory Channel! Feel free to discuss privacy and data protection here.
+                    Interdisciplinary discussion between fields is encouraged: psychologically, ethically, technically, lawfully, etc.
+                    """,
+                    'sender': 'System',
+                    'timestamp': datetime.datetime(2025, 1, 1, 0, 0, 0).isoformat(),
+                    'extra': None}
 
 @app.cli.command('register')
 def register_command():
@@ -101,28 +108,27 @@ def send_message():
                      'timestamp': message['timestamp'],
                      'extra': extra,
                      })
-    if len(messages) > MAX_MESSAGES: # if message limit reached, truncate the oldest message
+    if len(messages) > MAX_MESSAGES: # if message limit reached, truncate the oldest message, unless welcome message
+        global WELCOME_MESSAGE
+        if WELCOME_MESSAGE in messages:
+            messages.remove(WELCOME_MESSAGE)
         messages = messages[-MAX_MESSAGES:]
+        if WELCOME_MESSAGE not in messages:
+            messages.insert(0, WELCOME_MESSAGE)
     save_messages(messages)
     return "OK", 200
 
 def read_messages():
     global CHANNEL_FILE
-    welcome_message = {'content': """
-                        Welcome to The Privacy Advisory Channel! Feel free to discuss privacy and data protection here.
-                        Interdisciplinary discussion between fields is encouraged: psychologically, ethically, technically, lawfully, etc.
-                        """,
-                        'sender': 'System',
-                        'timestamp': datetime.datetime.now().isoformat(),
-                        'extra': None}
+    global WELCOME_MESSAGE
     try:
         f = open(CHANNEL_FILE, 'r')
     except FileNotFoundError:
-        return [welcome_message]
+        return [WELCOME_MESSAGE]
     try:
         messages = json.load(f)
     except json.decoder.JSONDecodeError:
-        messages = [welcome_message]
+        messages = [WELCOME_MESSAGE]
     f.close()
     return messages
 
