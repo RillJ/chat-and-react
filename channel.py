@@ -29,7 +29,7 @@ class ConfigClass(object):
     """ Flask application config """
 
     # Flask settings
-    SECRET_KEY = 'This is an INSECURE secret!! DO NOT use this in production!!'
+    SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
 # Create Flask app
 app = Flask(__name__)
@@ -73,11 +73,12 @@ class PrivacyAdvisor:
 
 #region Global variables
 load_dotenv()
+FLASK_PORT = 5001
 HUB_URL = "http://localhost:5555"
-HUB_AUTHKEY = "1234567890"
+HUB_AUTHKEY = os.getenv("HUB_AUTHKEY")
 CHANNEL_AUTHKEY = os.getenv("CHANNEL_AUTHKEY")
 CHANNEL_NAME = "The Privacy Advisory Channel"
-CHANNEL_ENDPOINT = "http://localhost:5001" # don't forget to adjust in the bottom of the file
+CHANNEL_ENDPOINT = f"http://localhost:{FLASK_PORT}"
 CHANNEL_FILE = "data/messages.json"
 CHANNEL_TYPE_OF_SERVICE = "aiweb24:chat"
 MAX_MESSAGES = 50 # the maximum number of messages to save and serve, note that the welcome message is excluded
@@ -85,11 +86,11 @@ PRIVACY_ADVISOR = PrivacyAdvisor()
 WELCOME_MESSAGE = {'content': """
                     Welcome to The Privacy Advisory Channel! Feel free to discuss privacy and data protection here.
                     Interdisciplinary discussion between fields is encouraged: psychologically, ethically, technically, lawfully, etc.
-                    The channel is equipped with a Privacy Advisor bot, which will give advice based on the subjects discussed.
+                    The channel is equipped with a Privacy Advisor bot, which will give general advice based on the theme of the discussion.
                     """,
                     'sender': 'System',
                     'timestamp': datetime.datetime(2025, 1, 1, 0, 0, 0).isoformat(),
-                    'extra': None}
+                    'extra': 'system_message'   }
 #endregion
 
 #region Flask CLI
@@ -185,7 +186,7 @@ def send_message():
             'content': PRIVACY_ADVISOR.generate_response(category),
             'sender': 'Bot: Privacy Advisor',
             'timestamp': datetime.datetime.now().isoformat(),
-            'extra': None
+            'extra': 'bot_message'
         }
         messages.append(advisor_response)
     # if message limit reached, truncate the oldest message, but keep welcome message
@@ -226,4 +227,4 @@ def save_messages(messages):
 # to register channel with hub
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(port=FLASK_PORT, debug=True)
