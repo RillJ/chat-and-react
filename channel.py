@@ -7,6 +7,7 @@ import json
 import requests
 import datetime
 from dotenv import load_dotenv
+from better_profanity import profanity
 
 # Class-based application configuration
 class ConfigClass(object):
@@ -87,20 +88,29 @@ def send_message():
     # check authorization header
     if not check_authorization(request):
         return "Invalid authorization", 400
-    # check if message is present
+    # check if message is present and content is not empty
     message = request.json
     if not message:
         return "No message", 400
     if not 'content' in message:
         return "No content", 400
+    if not message['content']:
+        return "Message content is empty", 400
     if not 'sender' in message:
         return "No sender", 400
+    if not message['sender']:
+        return "Message sender is empty", 400
     if not 'timestamp' in message:
         return "No timestamp", 400
     if not 'extra' in message:
         extra = None
     else:
         extra = message['extra']
+    # filter for profanity
+    if profanity.contains_profanity(message['content']):
+        return "Profanity detected in message content", 400
+    if profanity.contains_profanity(message['sender']):
+        return "Profanity detected in sender's name", 400
     # add message to messages
     messages = read_messages()
     messages.append({'content': message['content'],
@@ -108,7 +118,8 @@ def send_message():
                      'timestamp': message['timestamp'],
                      'extra': extra,
                      })
-    if len(messages) > MAX_MESSAGES: # if message limit reached, truncate the oldest message, unless welcome message
+    # if message limit reached, truncate the oldest message, but keep welcome message
+    if len(messages) > MAX_MESSAGES:
         global WELCOME_MESSAGE
         if WELCOME_MESSAGE in messages:
             messages.remove(WELCOME_MESSAGE)
