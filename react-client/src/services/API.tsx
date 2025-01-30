@@ -1,4 +1,5 @@
 import { Channel } from "../types/Channel";
+import { Message } from "../types/Message";
 
 const HUB_URL = "http://localhost:5555";
 const HUB_AUTHKEY = "1234567890";
@@ -35,5 +36,19 @@ export const API = {
       console.error("Failed to fetch channels:", error);
       throw error;
     }
+  },
+
+  async getMessages(channel: Channel): Promise<Message[]> {
+    const response = await fetch(channel.endpoint, {
+      headers: {
+        Authorization: `authkey ${channel.authkey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch messages: ${response.statusText}`);
+    }
+
+    return response.json();
   },
 };

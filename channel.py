@@ -14,6 +14,7 @@
 
 ## channel.py - a simple message channel for the Privacy Advisory Hub
 
+from flask_cors import CORS # temporarily for React client development
 from flask import Flask, request, render_template, jsonify
 import os
 import json
@@ -35,6 +36,7 @@ class ConfigClass(object):
 app = Flask(__name__)
 app.config.from_object(__name__ + '.ConfigClass') # configuration
 app.app_context().push() # create an app context before initializing db
+CORS(app) # enable CORS temporarily for all routes
 #endregion
 
 #region Privacy knowledge

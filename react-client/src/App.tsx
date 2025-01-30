@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Channel } from "./types/Channel";
 import { API } from "./services/API";
-import ListGroup from "./components/ListGroup";
+import ChannelView from "./components/ChannelView";
+import ChannelList from "./components/ChannelList";
 
 function App() {
   const [channels, setChannels] = useState<Channel[]>([]);
+  const [selectedChannel, setSelectedChannel] = useState<Channel>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
 
@@ -58,12 +60,25 @@ function App() {
   }
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Available channels: {channels.length}</h1>
-      <ListGroup
-        items={channels}
-        onSelectChannel={(channel) => console.log("Selected:", channel)}
-      />
+    <div className="container-fluid mt-4">
+      <div className="row">
+        <div className="col-md-4">
+          <h1 className="mb-4">Available Channels</h1>
+          {loading ? (
+            <div className="alert alert-info">Loading channels...</div>
+          ) : error ? (
+            <div className="alert alert-danger">{error}</div>
+          ) : (
+            <ChannelList
+              channels={channels}
+              onSelectChannel={setSelectedChannel}
+            />
+          )}
+        </div>
+        <div className="col-md-8">
+          {selectedChannel && <ChannelView channel={selectedChannel} />}
+        </div>
+      </div>
     </div>
   );
 }

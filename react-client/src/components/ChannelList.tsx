@@ -2,32 +2,32 @@ import { useState } from "react";
 import { Channel } from "../types/Channel";
 
 interface ListGroupProps {
-  items: Channel[];
-  onSelectChannel: (item: Channel) => void;
+  channels: Channel[];
+  onSelectChannel: (channel: Channel) => void;
 }
 
-function ListGroup({ items, onSelectChannel }: ListGroupProps) {
+function ChannelList({ channels, onSelectChannel }: ListGroupProps) {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Hook
 
   return (
     <>
-      {items.length === 0 && <p>No channels found.</p>}
+      {channels.length === 0 && <p>No channels found.</p>}
       <ul className="list-group">
-        {items.map((item, index) => (
+        {channels.map((channel, index) => (
           <li
             className={
               selectedIndex === index
                 ? "list-group-item active"
                 : "list-group-item"
             }
-            key={item.endpoint}
+            key={channel.endpoint}
             onClick={() => {
               setSelectedIndex(index);
-              onSelectChannel(item);
+              onSelectChannel(channel);
             }}
           >
-            {item.name}{" "}
-            <span className="text-muted">({item.type_of_service})</span>
+            {channel.name}{" "}
+            <span className="text-muted">({channel.type_of_service})</span>
           </li>
         ))}
       </ul>
@@ -35,4 +35,4 @@ function ListGroup({ items, onSelectChannel }: ListGroupProps) {
   );
 }
 
-export default ListGroup;
+export default ChannelList;
