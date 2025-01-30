@@ -3,3 +3,4 @@ flask-sqlalchemy
 requests
 python-dotenv
 better-profanity
+flask-cors # temporarily for React client development

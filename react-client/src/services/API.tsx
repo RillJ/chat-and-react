@@ -1,0 +1,39 @@
+import { Channel } from "../types/Channel";
+
+const HUB_URL = "http://localhost:5555";
+const HUB_AUTHKEY = "1234567890";
+
+export const API = {
+  async getChannels(): Promise<Channel[]> {
+    console.log("Fetching channels...");
+    try {
+      const response = await fetch(`${HUB_URL}/channels`, {
+        headers: {
+          Authorization: `authkey ${HUB_AUTHKEY}`,
+        },
+      });
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log("Received channels:", data);
+
+      if (!data.channels) {
+        throw new Error("No channels field in response");
+      }
+
+      return data.channels;
+    } catch (error) {
+      console.error("Failed to fetch channels:", error);
+      throw error;
+    }
+  },
+};

@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import datetime
 import requests
+from flask_cors import CORS # temporarily for React client development
 
 db = SQLAlchemy()
 
@@ -35,6 +36,7 @@ app.config.from_object(__name__ + '.ConfigClass')  # configuration
 app.app_context().push()  # create an app context before initializing db
 db.init_app(app)  # initialize database
 db.create_all()  # create database if necessary
+CORS(app) # enable CORS temporarily for all routes
 
 SERVER_AUTHKEY = '1234567890'
 
