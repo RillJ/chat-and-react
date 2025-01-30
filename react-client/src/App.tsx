@@ -63,7 +63,7 @@ function App() {
     <div className="container-fluid mt-4">
       <div className="row">
         <div className="col-md-4">
-          <h1 className="mb-4">Available Channels</h1>
+          <h1 className="mb-4">Channels</h1>
           {loading ? (
             <div className="alert alert-info">Loading channels...</div>
           ) : error ? (
@@ -71,6 +71,7 @@ function App() {
           ) : (
             <ChannelList
               channels={channels}
+              selectedChannel={selectedChannel}
               onSelectChannel={setSelectedChannel}
             />
           )}
