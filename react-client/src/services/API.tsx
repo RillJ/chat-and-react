@@ -51,4 +51,27 @@ export const API = {
 
     return response.json();
   },
+
+  async sendMessage(
+    channel: Channel,
+    content: string,
+    sender: string
+  ): Promise<void> {
+    const response = await fetch(channel.endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `authkey ${channel.authkey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content,
+        sender,
+        timestamp: new Date().toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to send message: ${response.statusText}`);
+    }
+  },
 };
