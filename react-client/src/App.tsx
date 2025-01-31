@@ -10,6 +10,7 @@ function App() {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const loadChannels = async () => {
@@ -80,7 +81,13 @@ function App() {
           )}
         </div>
         <div className="col-md-8">
-          {selectedChannel && <ChannelView channel={selectedChannel} />}
+          {selectedChannel && (
+            <ChannelView
+              channel={selectedChannel}
+              username={username}
+              onUsernameChange={setUsername}
+            />
+          )}
         </div>
       </div>
     </div>

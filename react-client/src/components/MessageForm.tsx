@@ -2,20 +2,25 @@ import { useState, FormEvent } from "react";
 
 interface MessageFormProps {
   onSubmit: (content: string, sender: string) => Promise<void>;
+  username: string;
+  onUsernameChange: (username: string) => void;
 }
 
-function MessageForm({ onSubmit }: MessageFormProps) {
+function MessageForm({
+  onSubmit,
+  username,
+  onUsernameChange,
+}: MessageFormProps) {
   const [content, setContent] = useState("");
-  const [sender, setSender] = useState("");
   const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!content.trim() || !sender.trim()) return;
+    if (!content.trim() || !username.trim()) return;
 
     setSending(true);
     try {
-      await onSubmit(content, sender);
+      await onSubmit(content, username);
       setContent("");
     } finally {
       setSending(false);
@@ -28,9 +33,9 @@ function MessageForm({ onSubmit }: MessageFormProps) {
         <input
           type="text"
           className="form-control"
-          placeholder="Your (user)name"
-          value={sender}
-          onChange={(e) => setSender(e.target.value)}
+          placeholder="Your (user)name..."
+          value={username}
+          onChange={(e) => onUsernameChange(e.target.value)}
           required
         />
       </div>
@@ -44,7 +49,7 @@ function MessageForm({ onSubmit }: MessageFormProps) {
           required
         />
         <button type="submit" className="btn btn-primary" disabled={sending}>
-          {sending ? "Sending..." : "Send"}
+          {sending ? "Sending message..." : "Send"}
         </button>
       </div>
     </form>

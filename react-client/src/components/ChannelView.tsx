@@ -7,9 +7,15 @@ import MessageForm from "./MessageForm";
 
 interface ChannelViewProps {
   channel: Channel;
+  username: string;
+  onUsernameChange: (username: string) => void;
 }
 
-function ChannelView({ channel }: ChannelViewProps) {
+function ChannelView({
+  channel,
+  username,
+  onUsernameChange,
+}: ChannelViewProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
@@ -31,9 +37,9 @@ function ChannelView({ channel }: ChannelViewProps) {
     return () => clearInterval(interval);
   }, [channel, loadMessages]);
 
-  const handleSendMessage = async (content: string, sender: string) => {
+  const handleSendMessage = async (content: string) => {
     try {
-      await API.sendMessage(channel, content, sender);
+      await API.sendMessage(channel, content, username);
       await loadMessages();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send message");
@@ -47,7 +53,11 @@ function ChannelView({ channel }: ChannelViewProps) {
     <div className="channel-view">
       <h2>{channel.name}</h2>
       <MessageList messages={messages} />
-      <MessageForm onSubmit={handleSendMessage} />
+      <MessageForm
+        onSubmit={handleSendMessage}
+        username={username}
+        onUsernameChange={onUsernameChange}
+      />
     </div>
   );
 }
