@@ -9,6 +9,7 @@ function App() {
   const [selectedChannel, setSelectedChannel] = useState<Channel>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadChannels = async () => {
@@ -73,6 +74,8 @@ function App() {
               channels={channels}
               selectedChannel={selectedChannel}
               onSelectChannel={setSelectedChannel}
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
             />
           )}
         </div>
