@@ -52,6 +52,18 @@ function MessageForm({
           {sending ? "Sending message..." : "Send"}
         </button>
       </div>
+      <small className="text-muted mt-2 d-block">
+        Supports Markdown formatting: **bold**, *italic*, `code`, ```code
+        blocks```; click{" "}
+        <a
+          href="https://www.markdownguide.org/basic-syntax/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>{" "}
+        for more formatting options
+      </small>
     </form>
   );
 }

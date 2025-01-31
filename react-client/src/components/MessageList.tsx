@@ -1,4 +1,5 @@
 import { Message } from "../types/Message";
+import MessageContent from "./MessageContent";
 
 interface MessageListProps {
   messages: Message[];
@@ -15,7 +16,7 @@ function MessageList({ messages }: MessageListProps) {
               <b>{message.sender}</b> at{" "}
               {new Date(message.timestamp).toLocaleString()}
             </h6>
-            <p className="card-text">{message.content}</p>
+            <MessageContent content={message.content} />
           </div>
         </div>
       ))}
