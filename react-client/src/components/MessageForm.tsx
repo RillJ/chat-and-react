@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useRef } from "react";
 
 interface MessageFormProps {
   onSubmit: (content: string, sender: string) => Promise<void>;
@@ -13,7 +13,16 @@ function MessageForm({
 }: MessageFormProps) {
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Adjusts the height of the text box
+  const adjustHeight = (element: HTMLTextAreaElement) => {
+    element.style.height = "auto";
+    const newHeight = Math.min(element.scrollHeight, 15 * 24); // 24px per line in message box
+    element.style.height = `${newHeight}px`;
+  };
+
+  // Handles form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!content.trim() || !username.trim()) return;
@@ -22,6 +31,10 @@ function MessageForm({
     try {
       await onSubmit(content, username);
       setContent("");
+      // Reset height of text box to 1 line after sending message
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "38px";
+      }
     } finally {
       setSending(false);
     }
@@ -40,12 +53,29 @@ function MessageForm({
         />
       </div>
       <div className="input-group">
-        <input
-          type="text"
+        <textarea
+          ref={textareaRef}
           className="form-control"
-          placeholder="Type a message..."
+          placeholder="Type a message... (Shift + Enter for new line)"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => {
+            setContent(e.target.value);
+            adjustHeight(e.target);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              if (content.trim()) {
+                handleSubmit(e as any);
+              }
+            }
+          }}
+          rows={1}
+          style={{
+            resize: "none",
+            minHeight: "38px",
+            maxHeight: "360px",
+          }}
           required
         />
         <button type="submit" className="btn btn-primary" disabled={sending}>
