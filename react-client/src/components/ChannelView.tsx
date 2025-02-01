@@ -21,11 +21,14 @@ function ChannelView({
   const [loading, setLoading] = useState(true);
 
   const loadMessages = useCallback(async () => {
+    console.log("Starting to load messages..");
     try {
       const data = await API.getMessages(channel);
+      console.log("Successfully loaded messages:", data);
       setMessages(data);
       setError(undefined);
     } catch (err) {
+      console.error("Error in loadMessages:", err);
       setError(err instanceof Error ? err.message : "Failed to load messages");
     }
   }, [channel]);
@@ -46,19 +49,30 @@ function ChannelView({
     }
   };
 
-  if (loading) return <div className="text-center">Loading messages...</div>;
-  if (error) return <div className="alert alert-danger">{error}</div>;
-
   return (
     <div className="channel-view">
       <h2>{channel.name}</h2>
-      <MessageList messages={messages} />
-      <MessageForm
-        onSubmit={handleSendMessage}
-        username={username}
-        onUsernameChange={onUsernameChange}
-        onFetch={loadMessages}
-      />
+      {loading && (
+        <div className="alert alert-info">
+          Fetching messages...
+          <div className="spinner-border spinner-border-sm ms-2" role="status">
+            <span className="visually-hidden">Fetching...</span>
+          </div>
+        </div>
+      )}
+      {error ? (
+        <div className="alert alert-danger">{error}</div>
+      ) : (
+        <>
+          <MessageList messages={messages} />
+          <MessageForm
+            onSubmit={handleSendMessage}
+            username={username}
+            onUsernameChange={onUsernameChange}
+            onFetch={loadMessages}
+          />
+        </>
+      )}
     </div>
   );
 }
