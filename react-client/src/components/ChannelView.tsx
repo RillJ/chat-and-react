@@ -57,6 +57,7 @@ function ChannelView({
         onSubmit={handleSendMessage}
         username={username}
         onUsernameChange={onUsernameChange}
+        onFetch={loadMessages}
       />
     </div>
   );

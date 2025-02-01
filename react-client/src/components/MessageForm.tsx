@@ -4,16 +4,19 @@ interface MessageFormProps {
   onSubmit: (content: string, sender: string) => Promise<void>;
   username: string;
   onUsernameChange: (username: string) => void;
+  onFetch: () => Promise<void>;
 }
 
 function MessageForm({
   onSubmit,
   username,
   onUsernameChange,
+  onFetch,
 }: MessageFormProps) {
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [fetching, setFetching] = useState(false);
 
   // Adjusts the height of the text box
   const adjustHeight = (element: HTMLTextAreaElement) => {
@@ -22,7 +25,7 @@ function MessageForm({
     element.style.height = `${newHeight}px`;
   };
 
-  // Handles form submission
+  // Submits messages to the channel API
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!content.trim() || !username.trim()) return;
@@ -40,17 +43,46 @@ function MessageForm({
     }
   };
 
+  // Fetches new messages from the channel API
+  const handleFetch = async () => {
+    setFetching(true);
+    try {
+      await onFetch();
+    } finally {
+      setFetching(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="mt-3">
-      <div className="mb-3">
+      <div className="mb-3 d-flex justify-content-between align-items-center">
         <input
           type="text"
-          className="form-control"
+          className="form-control me-2"
           placeholder="Your (user)name..."
           value={username}
           onChange={(e) => onUsernameChange(e.target.value)}
           required
         />
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+          style={{ width: "160px" }}
+          onClick={handleFetch}
+          disabled={fetching}
+        >
+          {fetching ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-1" />
+              Fetching...
+            </>
+          ) : (
+            <>
+              <i className="bi bi-arrow-clockwise me-1"></i>
+              Fetch
+            </>
+          )}
+        </button>
       </div>
       <div className="input-group">
         <textarea
