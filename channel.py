@@ -92,7 +92,7 @@ WELCOME_MESSAGE = {'content': """
                     """,
                     'sender': 'System',
                     'timestamp': datetime.datetime(2025, 1, 1, 0, 0, 0).isoformat(),
-                    'extra': 'system_message'   }
+                    'extra': {'message_type': 'system'}  }
 #endregion
 
 #region Flask CLI
@@ -188,7 +188,7 @@ def send_message():
             'content': PRIVACY_ADVISOR.generate_response(category),
             'sender': 'Bot: Privacy Advisor',
             'timestamp': datetime.datetime.now().isoformat(),
-            'extra': 'bot_message'
+            'extra': {'message_type': 'privacy_advisor_bot', 'category': category}
         }
         messages.append(advisor_response)
     # if message limit reached, truncate the oldest message, but keep welcome message
