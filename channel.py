@@ -14,7 +14,7 @@
 
 ## channel.py - a simple message channel for the Privacy Advisory Hub
 
-from flask_cors import CORS # temporarily for React client development
+from flask_cors import CORS # enable the React client to access the API
 from flask import Flask, request, render_template, jsonify
 import os
 import json
@@ -36,7 +36,7 @@ class ConfigClass(object):
 app = Flask(__name__)
 app.config.from_object(__name__ + '.ConfigClass') # configuration
 app.app_context().push() # create an app context before initializing db
-CORS(app) # enable CORS temporarily for all routes
+CORS(app) # enable CORS for all routes
 #endregion
 
 #region Privacy knowledge
@@ -85,11 +85,11 @@ CHANNEL_FILE = "data/messages.json"
 CHANNEL_TYPE_OF_SERVICE = "aiweb24:chat"
 MAX_MESSAGES = 50 # the maximum number of messages to save and serve, note that the welcome message is excluded
 PRIVACY_ADVISOR = PrivacyAdvisor()
-WELCOME_MESSAGE = {'content': """
-                    Welcome to The Privacy Advisory Channel! Feel free to discuss privacy and data protection here.
-                    Interdisciplinary discussion between fields is encouraged: psychologically, ethically, technically, lawfully, etc.
-                    The channel is equipped with a Privacy Advisor bot, which will give general advice based on the theme of the discussion.
-                    """,
+WELCOME_MESSAGE = {'content': "Welcome to The Privacy Advisory Channel! Feel free to discuss anything related to privacy and data protection here. " +
+                    "Interdisciplinary discussion between fields is encouraged: psychologically, ethically, technically, lawfully, etc. " +
+                    "The channel is equipped with a Privacy Advisor bot, which will give general advice based on the theme of the discussion. " +
+                    "The number of messages is limited to 50. Older messages will be removed if this limit is reached. " +
+                    "Please keep the conversations respectful and refrain from using profanity. Enjoy your stay! ",
                     'sender': 'System',
                     'timestamp': datetime.datetime(2025, 1, 1, 0, 0, 0).isoformat(),
                     'extra': {'message_type': 'system'}  }
