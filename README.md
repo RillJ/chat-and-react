@@ -1,67 +1,110 @@
-# Privacy Advisory Chat System
+# Chat and React
 
-A distributed chat system with an AI-powered Privacy Advisor bot that provides contextual privacy guidance based on conversation topics.
+A modern distributed chat system implementing a hub-and-spoke architecture, where multiple specialized chat channels can connect to a central hub. It also boasts a front-end web interface built on React and TypeScript. The system currently has one channel, which is a privacy discussion channel with an AI-powered Privacy Advisor bot, demonstrating how specialized channels can provide unique functionalities in a distributed environment.
 
 ## Overview
 
-This system consists of three main components:
+This modular system demonstrates a scalable approach to distributed chat systems with three core components:
 
-- **Hub Server**: Central registry for chat channels
-- **Privacy Advisory Channel**: Specialized chat channel with privacy-focused bot
-- **Web Client**: Interface for users to access channels and participate in discussions
+- **Hub Server**: Acts as a central registry where chat channels can register themselves to enable dynamic discovery of available channels. The hub is built with Flask and SQLAlchemy and allows it to maintain channel metadata and handle cross-channel authentication.
 
-The Privacy Advisor bot monitors conversations and provides relevant privacy advice based on detected keywords in areas like:
-- Data protection regulations
-- Privacy concepts and principles  
-- Security risks and threats
-- Privacy best practices
-- Privacy-enhancing tools
+- **Privacy Advisory Channel**: An example specialized channel that demonstrates the system's extensibility. It includes an AI-powered Privacy Advisor bot that monitors conversations and provides contextual privacy guidance. Additional specialized channels can be created following the same pattern. The bot monitors conversations and provides relevant privacy advice based on detected keywords in areas like:
+
+  - Data protection regulations
+  - Privacy concepts and principles
+  - Security risks and threats
+  - Privacy best practices
+  - Privacy-enhancing tools
+
+- **React Client**: A modern TypeScript/React front-end that provides a unified interface to interact with all available channels. It supports real-time messaging, markdown formatting, theme customization, and channel-specific features while maintaining a consistent user experience across different channel types.
+  ![React Client](data/front-end-example.png)
+
+## Background
+
+I developed this system as part of a course in my Master's program in Cognitive Science. This course focuses on the application of AI technologies within web applications.
 
 ## Features
 
+### Back-end
+
+**Hub**
+
 - Distributed chat system architecture
-- Privacy-focused chat channel
-- Context-aware privacy advisor bot
-- Profanity filtering
 - Message history management
 - Cross-channel authorization
 - Health monitoring for channels
 
+**Channel**
+
+- Privacy-focused chat channel
+- Total number of messages limiter
+- Context-aware privacy advisor bot
+- Profanity filtering
+- Welcome message
+
+### Front-end
+
+- Modern React with TypeScript implementation
+- Real-time message updates
+- Markdown message formatting
+- Dark/Light theme support
+- Channel search functionality
+- Responsive Bootstrap design
+- Special styling for bot and system messages
+- Multi-line message support with Shift+Enter
+- Session-persistant username field
+
 ## Technical Details
+
+### Back-end
 
 - Built with Flask and SQLAlchemy
 - SQLite database for channel registry
 - JSON-based message storage
-- RESTful API communication between components
-- Template-based web interface
+- RESTful API communication
 - Environment-based configuration
+
+### Front-end
+
+- React 18 with TypeScript
+- Bootstrap 5 for styling
+- react-markdown for message formatting
+- Context API for theme management
+- Vite for development and building
 
 ## Project Structure
 
 ```
-├── channel.py               # Privacy Advisory Channel implementation
-├── client.py                # Web client interface
-├── hub.py                   # Central channel registry server
-├── data/                    # Channel data and bot knowledge
-│   ├── messages.json        # Channel message history
-│   ├── responses.json       # Bot response templates
-│   ├── sample_messages.json # Example conversations
-│   └── triggers.json        # Bot trigger keywords
-├── templates/               # HTML templates
-│   ├── channel.html         # Channel view
-│   └── home.html            # Channel list view
-└── requirements.txt         # Python dependencies
+├── /                       # Root: Python back-end services
+│   ├── channel.py          # Privacy Advisory Channel implementation
+│   ├── hub.py              # Central channel registry server
+│   ├── data/               # Channel data and bot knowledge
+│   │   ├── messages.json   # Channel message history
+│   │   ├── responses.json  # Bot response templates
+│   │   └── triggers.json   # Bot trigger keywords
+│   └── requirements.txt    # Python dependencies
+│
+├── react-client/           # React front-end application
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── contexts/       # React contexts
+│   │   ├── services/       # API services
+│   │   ├── types/          # TypeScript types
+│   │   └── App.tsx         # Main application component
+│   └── package.json        # Node.js dependencies
 ```
 
-## Setup
+## Getting Started
 
-### 1. Install dependencies:
+### 1. Back-end Setup
+
+**1.1 Install Python dependencies**
 
 ```sh
 pip install -r requirements.txt
 ```
 
-### 2. Set up environment variables
+**1.2 Set up environment variables**
 
 Create a file called `.env` in the root directory of the project and enter the appropiate keys for the components.
 
@@ -70,38 +113,45 @@ Create a file called `.env` in the root directory of the project and enter the a
 
 ```sh
 HUB_AUTHKEY="1234567890"
-CHANNEL_AUTHKEY="your_channel_key" 
+CHANNEL_AUTHKEY="your_channel_key"
 FLASK_SECRET_KEY="your_secret_key"
 ```
 
-### 3. Start the hub server
+**1.3 Start the services**
+
 ```sh
+# Terminal 1: Start hub server
 python hub.py
-```
 
-### 4. Register the Privacy Advisory Channel
-The channel must be registerd to the hub server in order for it to show as a possible channel users can converse in.
-
-```sh
+# Terminal 2: Register channel to hub and start server
 flask --app channel.py register
-```
-
-### 5. Start the Privacy Advisory Channel
-```sh
 python channel.py
 ```
 
-### 6. Start the web client
+### 2. Front-end Setup
+
+**2.1 Install Node.js dependencies**
+
 ```sh
-python client.py
+cd react-client
+npm install
+```
+
+**2.2 Start development server**
+
+```sh
+npm run dev
 ```
 
 ## Usage
 
-1. Access the web client at `http://localhost:5005`
-2. View available channels
-3. Join the Privacy Advisory Channel to discuss privacy topics
-4. The Privacy Advisor bot will automatically provide relevant advice based on conversation themes
+1. Access the React client at `http://localhost:5173`
+2. View and search available channels
+3. Select a channel to join the conversation
+4. Enter your username to start chatting
+5. Use Markdown formatting in messages
+6. Toggle between dark and light themes
+7. The Privacy Advisor bot will automatically provide relevant advice
 
 ## License
 
