@@ -1,8 +1,11 @@
 import { Channel } from "../types/Channel";
 import SearchBar from "./SearchBar";
+import { useState, useEffect } from "react";
+import { API } from "../services/API";
 
 interface ChannelListProps {
   channels: Channel[];
+  setChannels: (channels: Channel[]) => void;
   selectedChannel?: Channel;
   onSelectChannel: (channel: Channel) => void;
   searchTerm: string;
@@ -11,11 +14,38 @@ interface ChannelListProps {
 
 function ChannelList({
   channels,
+  setChannels,
   selectedChannel,
   onSelectChannel,
   searchTerm,
   onSearchChange,
 }: ChannelListProps) {
+  const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(false);
+
+  const loadChannels = async () => {
+    console.log("Starting to load channels...");
+    setLoading(true);
+    try {
+      const data = await API.getChannels();
+      console.log("Successfully loaded channels:", data);
+      setChannels(data);
+      setError(undefined);
+    } catch (err) {
+      console.error("Error in loadChannels:", err);
+      setError(err instanceof Error ? err.message : "Failed to load channels");
+      setChannels([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadChannels();
+    const interval = setInterval(loadChannels, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const filteredChannels = channels.filter(
     (channel) =>
       channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -25,6 +55,15 @@ function ChannelList({
   return (
     <div>
       <SearchBar value={searchTerm} onChange={onSearchChange} />
+      {loading && (
+        <div className="alert alert-info">
+          Refreshing channels...
+          <div className="spinner-border spinner-border-sm ms-2" role="status">
+            <span className="visually-hidden">Refreshing...</span>
+          </div>
+        </div>
+      )}
+      {error && <div className="alert alert-danger">{error}</div>}
       <div className="list-group">
         {filteredChannels.map((channel) => (
           <button
@@ -41,7 +80,7 @@ function ChannelList({
           </button>
         ))}
       </div>
-      {filteredChannels.length === 0 && (
+      {filteredChannels.length === 0 && !loading && !error && (
         <div className="alert alert-info mt-3">
           No channels found for: "{searchTerm}"
         </div>
