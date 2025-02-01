@@ -108,7 +108,7 @@ pip install -r requirements.txt
 
 Create a file called `.env` in the root directory of the project and enter the appropiate keys for the components.
 
-- The `HUB_AUTHKEY` is `1234567890` by default, but could be changed in `hub.py`.
+- The `HUB_AUTHKEY` is `1234567890` by default, but could be changed in [hub.py](hub.py).
 - The other keys can be randomly generated and up to 32 characters.
 
 ```sh
@@ -141,6 +141,14 @@ npm install
 
 ```sh
 npm run dev
+```
+
+**2.3 (Optional) build app**
+
+For a production server, change `HUB_URL` and `HUB_AUTHKEY` in [API.tsx](react-client/src/services/API.tsx) to appropiate values, then build the app to be able to run it with [client.wsgi](client.wsgi).
+
+```sh
+npm run build
 ```
 
 ## Usage
