@@ -1,10 +1,12 @@
 import { Channel } from "../types/Channel";
 import { Message } from "../types/Message";
 
+// API configuration constants, change as needed
 const HUB_URL = "http://localhost:5555";
 const HUB_AUTHKEY = "1234567890";
 
 export const API = {
+  // Fetches all available channels from the hub
   async getChannels(): Promise<Channel[]> {
     console.log("Fetching channels...");
     try {
@@ -16,6 +18,7 @@ export const API = {
 
       console.log("Response status:", response.status);
 
+      // Check for HTTP errors
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Error response:", errorText);
@@ -27,6 +30,7 @@ export const API = {
       const data = await response.json();
       console.log("Received channels:", data);
 
+      // Validate response structure
       if (!data.channels) {
         throw new Error("No channels field in response");
       }
@@ -38,6 +42,7 @@ export const API = {
     }
   },
 
+  // Retrieves messages for a specific channel
   async getMessages(channel: Channel): Promise<Message[]> {
     const response = await fetch(channel.endpoint, {
       headers: {
@@ -52,6 +57,7 @@ export const API = {
     return response.json();
   },
 
+  // Sends a new message to a specific channel
   async sendMessage(
     channel: Channel,
     content: string,
@@ -63,6 +69,7 @@ export const API = {
         Authorization: `authkey ${channel.authkey}`,
         "Content-Type": "application/json",
       },
+      // Create message object with content, sender, and current timestamp
       body: JSON.stringify({
         content,
         sender,

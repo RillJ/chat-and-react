@@ -1,6 +1,7 @@
 import { useTheme } from "../contexts/ThemeContext";
 
 export function ThemeToggle() {
+  // Get current theme and toggle function from theme context
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -10,10 +11,11 @@ export function ThemeToggle() {
         type="checkbox"
         role="switch"
         id="themeSwitch"
-        checked={theme === "dark"}
-        onChange={toggleTheme}
+        checked={theme === "dark"} // Checkbox is checked when theme is dark
+        onChange={toggleTheme} // Toggle theme when checkbox is clicked
       />
       <label className="form-check-label" htmlFor="themeSwitch">
+        {/* Show moon emoji for dark theme, sun for light theme */}
         {theme === "dark" ? "🌙" : "☀️"}
       </label>
     </div>

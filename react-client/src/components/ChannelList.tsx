@@ -23,6 +23,7 @@ function ChannelList({
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
 
+  // Function to fetch channels from the API
   const loadChannels = async () => {
     console.log("Starting to load channels...");
     setLoading(true);
@@ -40,12 +41,14 @@ function ChannelList({
     }
   };
 
+  // Effect to load channels initially and refresh every minute
   useEffect(() => {
     loadChannels();
-    const interval = setInterval(loadChannels, 60000);
-    return () => clearInterval(interval);
+    const interval = setInterval(loadChannels, 60000); // Refresh every 60 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
+  // Filter channels based on search term (name or service type)
   const filteredChannels = channels.filter(
     (channel) =>
       channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -54,7 +57,10 @@ function ChannelList({
 
   return (
     <div>
+      {/* Search input component */}
       <SearchBar value={searchTerm} onChange={onSearchChange} />
+
+      {/* Loading indicator */}
       {loading && (
         <div className="alert alert-info">
           Refreshing channels...
@@ -63,7 +69,11 @@ function ChannelList({
           </div>
         </div>
       )}
+
+      {/* Error message display */}
       {error && <div className="alert alert-danger">{error}</div>}
+
+      {/* Channel list */}
       <div className="list-group">
         {filteredChannels.map((channel) => (
           <button
@@ -80,6 +90,8 @@ function ChannelList({
           </button>
         ))}
       </div>
+
+      {/* No results message */}
       {filteredChannels.length === 0 && !loading && !error && (
         <div className="alert alert-info mt-3">
           No channels found for: "{searchTerm}"

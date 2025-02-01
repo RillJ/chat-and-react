@@ -55,6 +55,7 @@ function MessageForm({
 
   return (
     <form onSubmit={handleSubmit} className="mt-3">
+      {/* Username input and fetch button container */}
       <div className="mb-3 d-flex justify-content-between align-items-center">
         <input
           type="text"
@@ -64,6 +65,7 @@ function MessageForm({
           onChange={(e) => onUsernameChange(e.target.value)}
           required
         />
+        {/* Fetch button with loading state */}
         <button
           type="button"
           className="btn btn-outline-primary"
@@ -84,6 +86,7 @@ function MessageForm({
           )}
         </button>
       </div>
+      {/* Message input area */}
       <div className="input-group">
         <textarea
           ref={textareaRef}
@@ -94,6 +97,7 @@ function MessageForm({
             setContent(e.target.value);
             adjustHeight(e.target);
           }}
+          // Handle Enter key for submission
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -114,6 +118,7 @@ function MessageForm({
           {sending ? "Sending message..." : "Send"}
         </button>
       </div>
+      {/* Markdown formatting help text */}
       <small className="text-muted mt-2 d-block">
         Supports Markdown formatting: **bold**, *italic*, `code`, ```code
         blocks```; click{" "}

@@ -20,6 +20,7 @@ function ChannelView({
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
 
+  // Function to fetch messages from the API
   const loadMessages = useCallback(async () => {
     console.log("Starting to load messages..");
     try {
@@ -33,16 +34,19 @@ function ChannelView({
     }
   }, [channel]);
 
+  // Effect to load channels initially and refresh every minute
   useEffect(() => {
     setLoading(true);
     loadMessages().finally(() => setLoading(false));
-    const interval = setInterval(loadMessages, 60000);
-    return () => clearInterval(interval);
+    const interval = setInterval(loadMessages, 60000); // Refresh every 60 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
   }, [channel, loadMessages]);
 
+  // Handle sending new messages
   const handleSendMessage = async (content: string) => {
     try {
       await API.sendMessage(channel, content, username);
+      // Reload messages after sending to show the new message
       await loadMessages();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send message");
@@ -52,6 +56,7 @@ function ChannelView({
   return (
     <div className="channel-view">
       <h2>{channel.name}</h2>
+      {/* Show loading spinner while fetching messages */}
       {loading && (
         <div className="alert alert-info">
           Fetching messages...
@@ -60,6 +65,7 @@ function ChannelView({
           </div>
         </div>
       )}
+      {/* Show error message if there's an error, otherwise show messages and form */}
       {error ? (
         <div className="alert alert-danger">{error}</div>
       ) : (
